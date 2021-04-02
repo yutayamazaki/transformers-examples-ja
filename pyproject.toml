@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "transformers-examples-ja"
+version = "0.1.0"
+description = ""
+authors = ["yutayamazaki <tppymd@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+torch = "^1.8.1"
+transformers = "^4.4.2"
+fugashi = "^1.1.0"
+ipadic = "^1.0.0"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^3.9.0"
+mypy = "^0.812"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
