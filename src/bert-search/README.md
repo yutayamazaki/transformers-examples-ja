@@ -6,10 +6,6 @@
 docker-compose -f docker/docker-compose.yaml up
 ```
 
-## API
+`http://localhost:8000/`にアクセスすると以下のページに遷移する。最初の検索だけ爆遅なので注意。
 
-- 検索の実行
-
-```shell
-curl "http://localhost:8000/api/search" --get --data-urlencode "q=送料はなんぼですか"
-```
+![](../../assets/bert-search-app.png)

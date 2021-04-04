@@ -3,7 +3,9 @@ from typing import Any, Dict, List
 
 import numpy as np
 import torch
-from fastapi import APIRouter
+from fastapi import APIRouter, Request, Form
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 from transformers import BertJapaneseTokenizer, BertModel
 
 import app.nlp_utils as nlp_utils
@@ -41,8 +43,18 @@ def cosine_similarity(a: torch.Tensor, b: torch.Tensor) -> float:
     return sim.item()
 
 
-@router.get('/search')
-async def search(q: str):
+@router.get('/', response_class=HTMLResponse)
+async def index_(request: Request):
+    templates = Jinja2Templates(directory='app/templates')
+    return templates.TemplateResponse(
+        'index.html',
+        context={'request': request, 'results': None, 'query': ''}
+    )
+
+
+@router.post('/', response_class=HTMLResponse)
+async def index_(request: Request, q: str = Form(...)):
+    templates = Jinja2Templates(directory='app/templates')
     global bert, tokenizer, index
     if bert is None or tokenizer is None:
         bert, tokenizer = nlp_utils.load_bert_model()
@@ -71,6 +83,8 @@ async def search(q: str):
             'text': results['texts'][idx],
             'score': results['scores'][idx]
         })
-    for r in resp:
-        print(r)
-    return resp
+
+    return templates.TemplateResponse(
+        'index.html',
+        context={'request': request, 'results': resp, 'query': q}
+    )

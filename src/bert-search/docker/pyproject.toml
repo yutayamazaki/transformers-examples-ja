@@ -11,6 +11,9 @@ transformers = "^4.4.2"
 fugashi = "^1.1.0"
 ipadic = "^1.0.0"
 fastapi = "^0.63.0"
+jinja2 = "^2.11.3"
+aiofiles = "^0.6.0"
+python-multipart = "^0.0.5"
 uvicorn = "^0.13.4"
 
 [tool.poetry.dev-dependencies]

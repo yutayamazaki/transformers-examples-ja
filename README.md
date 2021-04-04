@@ -14,11 +14,12 @@
 BERTの文章埋め込みを用いた類似文書検索アプリ。
 
 ```shell
-# Run server
 docker-compose -f docker/docker-compose.yaml up
-# Execute search
-curl "http://localhost:8000/api/search" --get --data-urlencode "q=送料はなんぼですか"
 ```
+
+`http://localhost:8000/`にアクセスすると以下のページに遷移する。最初の検索だけ爆遅なので注意。
+
+![](../../assets/bert-search-app.png)
 
 ## sentence_embedding
 
