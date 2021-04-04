@@ -1,20 +1,17 @@
-import uuid
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 import numpy as np
 import torch
 from fastapi import APIRouter, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from transformers import BertJapaneseTokenizer, BertModel
 
 import app.nlp_utils as nlp_utils
-from app.nlp_utils import get_sentence_embedding, load_bert_model
 
 router = APIRouter()
 bert, tokenizer = None, None
 
-index: List[Dict[str, str]] = [
+index: List[Dict[str, Any]] = [
     {
         'text': '決済方法には何が利用出来ますか？',
         'vector': None
@@ -44,7 +41,7 @@ def cosine_similarity(a: torch.Tensor, b: torch.Tensor) -> float:
 
 
 @router.get('/', response_class=HTMLResponse)
-async def index_(request: Request):
+async def index_get(request: Request):
     templates = Jinja2Templates(directory='app/templates')
     return templates.TemplateResponse(
         'index.html',
@@ -53,7 +50,7 @@ async def index_(request: Request):
 
 
 @router.post('/', response_class=HTMLResponse)
-async def index_(request: Request, q: str = Form(...)):
+async def index_post(request: Request, q: str = Form(...)):
     templates = Jinja2Templates(directory='app/templates')
     global bert, tokenizer, index
     if bert is None or tokenizer is None:
@@ -63,7 +60,7 @@ async def index_(request: Request, q: str = Form(...)):
     query_vec: torch.Tensor = nlp_utils.get_sentence_embedding(
         bert, tokenizer, q
     )
-    results = {
+    results: Dict[str, List[Union[str, float]]] = {
         'texts': [],
         'scores': []
     }

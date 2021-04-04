@@ -33,4 +33,6 @@ if __name__ == '__main__':
     print('bert_pooled_embed.size(): ', bert_pooled_embed.size())  # (768, )
     print('avg_pooled_embed.size()', avg_pooled_embed.size())  # (768, )
     print('max_pooled_embed.size()', max_pooled_embed.size())  # (768, )
-    print('concat_pooled_embed.size(): ', concat_pooled_embed.size())  # (1536, )
+    print(
+        'concat_pooled_embed.size(): ', concat_pooled_embed.size()
+    )  # (1536, )

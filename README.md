@@ -54,3 +54,10 @@ Some weights of the model checkpoint at cl-tohoku/bert-base-japanese-whole-word-
 [CLS] 山田 さん が それ を 見 た の は これ が 初めて でし た 。 巨大 だっ た 。 [SEP]
 [CLS] 山田 さん が 富士山 を 見 た の は これ が 初めて でし た 。 巨大 だっ た 。 [SEP]
 ```
+
+## 開発用
+
+```shell
+poetry run flake8 src
+poetry run mypy src
+```

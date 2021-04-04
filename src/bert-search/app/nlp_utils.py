@@ -16,10 +16,10 @@ def get_sentence_embedding(bert, tokenizer, sentence: str) -> torch.Tensor:
     )
     result = bert(input_ids)
 
-    #avg_pooled_embed: torch.Tensor = result[0][0].mean(dim=0)
+    # avg_pooled_embed: torch.Tensor = result[0][0].mean(dim=0)
     max_pooled_embed: torch.Tensor = result[0][0].max(dim=0)[0]
     return max_pooled_embed
-    #concat_pooled_embed: torch.Tensor = torch.cat(
-    #    [bert_pooled_embed, avg_pooled_embed, max_pooled_embed]
-    #)
-    #return concat_pooled_embed
+    # concat_pooled_embed: torch.Tensor = torch.cat(
+    #     [bert_pooled_embed, avg_pooled_embed, max_pooled_embed]
+    # )
+    # return concat_pooled_embed
