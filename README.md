@@ -9,6 +9,17 @@
 - [cl-tohoku/bert-japanese: BERT models for Japanese text.](https://github.com/cl-tohoku/bert-japanese)
 - [himkt/awesome-bert-japanese: 📝 A list of pre-trained BERT models for Japanese with word/subword tokenization + vocabulary construction algorithm information](https://github.com/himkt/awesome-bert-japanese)
 
+## bert-search
+
+BERTの文章埋め込みを用いた類似文書検索アプリ。
+
+```shell
+# Run server
+docker-compose -f docker/docker-compose.yaml up
+# Execute search
+curl "http://localhost:8000/api/search" --get --data-urlencode "q=送料はなんぼですか"
+```
+
 ## sentence_embedding
 
 事前学習済みモデルを利用して文章の埋め込み表現を得る。
