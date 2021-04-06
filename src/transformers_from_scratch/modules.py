@@ -22,7 +22,7 @@ class ScaledDotProductAttention(nn.Module):
             q, k, v (Tensor): (batch_size, nun_sequences, embedding_dim).
         Returns:
             output (Tensor): Output of this layer. (batch, num_sequences, embed_dim)
-            attn (Tensor): Attention weights. (batch, num_sequences, embed_dim)
+            weights (Tensor): Attention weights. (batch, num_sequences, embed_dim)
         '''
         # -> (batch, num_seq, num_seq)
         weights = torch.matmul(q / self.d_k, k.transpose(1, 2))
