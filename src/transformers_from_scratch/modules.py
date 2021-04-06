@@ -25,15 +25,15 @@ class ScaledDotProductAttention(nn.Module):
             attn (Tensor): Attention weights. (batch, num_sequences, embed_dim)
         '''
         # -> (batch, num_seq, num_seq)
-        attn = torch.matmul(q / self.d_k, k.transpose(1, 2))
+        weights = torch.matmul(q / self.d_k, k.transpose(1, 2))
 
         if mask is not None:
-            attn = attn.masked_fill(mask == 0, -1e9)
+            weights = weights.masked_fill(mask == 0, -1e9)
 
-        attn = F.softmax(attn, dim=2)
+        weights = F.softmax(weights, dim=2)
         # -> (batch, num_seq, embed_dim)
-        output = torch.matmul(attn, v)
-        return output, attn
+        output = torch.matmul(weights, v)
+        return output, weights
 
 
 if __name__ == '__main__':
