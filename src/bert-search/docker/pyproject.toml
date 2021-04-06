@@ -15,6 +15,7 @@ jinja2 = "^2.11.3"
 aiofiles = "^0.6.0"
 python-multipart = "^0.0.5"
 uvicorn = "^0.13.4"
+elasticsearch = "^7.12.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.9.0"

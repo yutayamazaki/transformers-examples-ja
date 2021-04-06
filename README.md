@@ -11,13 +11,13 @@
 
 ## bert-search
 
-BERTの文章埋め込みを用いた類似文書検索アプリ。
+BERTの文章埋め込み+ElasticSearchを用いた類似文書検索アプリ。
 
 ```shell
 docker-compose -f docker/docker-compose.yaml up
 ```
 
-`http://localhost:8000/`にアクセスすると以下のページに遷移する。最初の検索だけ爆遅なので注意。
+`http://localhost:8000/`にアクセスすると以下のページに遷移する。
 
 ![](./assets/bert-search-app.png)
 

@@ -1,5 +1,7 @@
 # Custom
 .DS_Store
+src/bert-search/docker/es-data/*
+!src/bert-search/docker/es-data/.gitkeep
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

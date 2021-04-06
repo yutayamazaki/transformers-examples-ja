@@ -55,7 +55,7 @@ class ScaledDotProductAttention(nn.Module):
             q, k, v (Tensor): (batch_size, nun_sequences, embedding_dim).
         Returns:
             output (Tensor): Output of this layer. (batch, num_sequences, embed_dim)
-            attn (Tensor): Attention weights. (batch, num_sequences, embed_dim)
+            weights (Tensor): Attention weights. (batch, num_sequences, embed_dim)
         '''
         # -> (batch, num_seq, num_seq)
         weights = torch.matmul(q / self.d_k, k.transpose(1, 2))
@@ -84,3 +84,10 @@ Transformerでは`Scaled Dot-Product Attention`を1つのheadとみなした`Mul
 ![](https://latex.codecogs.com/gif.latex?W_i%5EQ%5Cin%7B%5Cmathbb%7BR%7D%5E%7Bd_%7Bmodel%7D%5Ctimes%7Bd_k%7D%7D%7D), ![](https://latex.codecogs.com/gif.latex?W_i%5EK%5Cin%7B%5Cmathbb%7BR%7D%5E%7Bd_%7Bmodel%7D%5Ctimes%7Bd_k%7D%7D%7D), ![](https://latex.codecogs.com/gif.latex?W_i%5EV%5Cin%7B%5Cmathbb%7BR%7D%5E%7Bd_%7Bmodel%7D%5Ctimes%7Bd_v%7D%7D%7D)であり、自己注意機構ではd_k=d_v=64でありそれぞれK,Vの次元数を表す、h=8であるため最終出力はd_model=64*8=512次元となる。
 
 単一のd_model次元のベクトルに対する単一の自己注意機構よりもこっちの方が性能が良かった。というのも異なるheadが異なる位置の処理を行いアンサンブル的な効果があるから。
+
+### Position-wise Feed-Forward Networks
+
+
+## Transformerの解説記事など
+- [論文解説 Attention Is All You Need (Transformer) - ディープラーニングブログ](https://deeplearning.hatenablog.com/entry/transformer)
+- [The Illustrated Transformer – Jay Alammar – Visualizing machine learning one concept at a time.](http://jalammar.github.io/illustrated-transformer/)

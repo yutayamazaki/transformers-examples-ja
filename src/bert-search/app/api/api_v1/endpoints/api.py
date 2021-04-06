@@ -1,5 +1,6 @@
 from typing import Any, Dict, List, Union
 
+import elasticsearch as es
 import numpy as np
 import torch
 from fastapi import APIRouter, Request, Form
@@ -10,29 +11,7 @@ import app.nlp_utils as nlp_utils
 
 router = APIRouter()
 bert, tokenizer = None, None
-
-index: List[Dict[str, Any]] = [
-    {
-        'text': '決済方法には何が利用出来ますか？',
-        'vector': None
-    },
-    {
-        'text': '電話での注文は出来ますか？',
-        'vector': None
-    },
-    {
-        'text': '送料はいくらかかりますか？',
-        'vector': None
-    },
-    {
-        'text': '注文から商品の到着まで何日かかりますか？',
-        'vector': None
-    },
-    {
-        'text': '商品の返品・返金は可能ですか？',
-        'vector': None
-    },
-]
+INDEX: str = 'documents'
 
 
 def cosine_similarity(a: torch.Tensor, b: torch.Tensor) -> float:
@@ -49,39 +28,43 @@ async def index_get(request: Request):
     )
 
 
+def _get_query(query_vector: List[float]):
+    return {
+        'script_score': {
+            'query': {'match_all': {}},
+            'script': {
+                'source': 'cosineSimilarity(params.query_vector, "vector") + 1.0',
+                'params': {'query_vector': query_vector}
+            }
+        }
+    }
+
+
 @router.post('/', response_class=HTMLResponse)
 async def index_post(request: Request, q: str = Form(...)):
     templates = Jinja2Templates(directory='app/templates')
-    global bert, tokenizer, index
+
+    global bert, tokenizer
     if bert is None or tokenizer is None:
         bert, tokenizer = nlp_utils.load_bert_model()
         bert.eval()
-
     query_vec: torch.Tensor = nlp_utils.get_sentence_embedding(
         bert, tokenizer, q
-    )
-    results: Dict[str, List[Union[str, float]]] = {
-        'texts': [],
-        'scores': []
-    }
-    for idx, item in enumerate(index):
-        text: str = item['text']
-        vector = item['vector']
-        if vector is None:
-            vector = nlp_utils.get_sentence_embedding(bert, tokenizer, text)
-        index[idx] = {'text': item['text'], 'vector': vector}
-        results['texts'].append(text)
-        results['scores'].append(cosine_similarity(vector, query_vec))
+    ).detach().cpu().numpy()
 
-    indices = np.argsort(results['scores'])[::-1]
-    resp = []
-    for idx in indices:
-        resp.append({
-            'text': results['texts'][idx],
-            'score': results['scores'][idx]
-        })
+    client = es.Elasticsearch('http://elasticsearch:9200')
+    resp = client.search(
+        index=INDEX,
+        body={
+            'size': 5,
+            'query': _get_query(query_vec.tolist()),
+            '_source': {'includes': ['text']}
+        }
+    )
+    client.close()
+    res = [{'score': hit['_score'] / 2., 'text': hit['_source']['text']} for hit in resp['hits']['hits']]
 
     return templates.TemplateResponse(
         'index.html',
-        context={'request': request, 'results': resp, 'query': q}
+        context={'request': request, 'results': res, 'query': q}
     )
